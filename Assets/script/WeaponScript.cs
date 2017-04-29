@@ -1,0 +1,75 @@
+﻿using UnityEngine;
+
+public class WeaponScript : MonoBehaviour
+{
+	public Transform shotPrefab;
+	public float shootingRate = 0.25f;
+	public bool isEnemy = false;
+	public Vector2 speed = new Vector2 (0, 10);
+	private float shootCooldown;
+	protected bool paused = false;
+
+	public bool CanAttack {
+		get {
+			return shootCooldown <= 0f;
+		}
+	}
+
+	void OnPauseGame ()
+	{
+		paused = true;
+	}
+
+	void OnResumeGame ()
+	{
+		paused = false;
+	}
+
+	void OnEnable ()
+	{
+		if (isEnemy == false)
+			EventManager.StartListening ("Space", Attack);
+	}
+
+	void OnDisable ()
+	{
+		if (isEnemy == false)
+			EventManager.StopListening ("Space", Attack);
+	}
+
+	void Start ()
+	{
+		shootCooldown = 0f;
+	}
+
+	void Update ()
+	{
+		if (!paused) {
+			if (shootCooldown > 0)
+				shootCooldown -= Time.deltaTime;
+		}
+	}
+
+	public void Attack ()
+	{
+		if (CanAttack) {
+			Transform shotTransform = Instantiate (shotPrefab) as Transform;
+			Vector2 position = transform.position;
+
+			shootCooldown = shootingRate;
+			if (isEnemy) {
+				SoundEffectsHelper.Instance.MakeEnemyShotSound ();
+				position.y = position.y - 0.5f;
+			} else {
+				SoundEffectsHelper.Instance.MakePlayerShotSound ();
+				position.y = position.y + 0.5f;
+			}
+			shotTransform.position = position;
+
+			ShotScript shot = shotTransform.gameObject.GetComponent<ShotScript> ();
+			shot.speed = speed;
+			if (shot != null)
+				shot.isEnemyShot = isEnemy;
+		}
+	}
+}
