@@ -2,29 +2,29 @@
 
 public class ShotScript : MonoBehaviour
 {
-	public int damage = 1;
-	public bool isEnemyShot = false;
-	public Vector2 speed = new Vector2 (10, 10);
-	protected bool paused = false;
+    public int damage = 1;
+    public bool isEnemyShot = false;
+    public Vector2 speed = new Vector2(10, 10);
+    protected bool _paused = false;
 
-	void OnPauseGame ()
-	{
-		paused = true;
-	}
+    void OnPauseGame()
+    {
+        _paused = true;
+    }
 
-	void OnResumeGame ()
-	{
-		paused = false;
-	}
+    void OnResumeGame()
+    {
+        _paused = false;
+    }
 
-	void Start ()
-	{
-		Destroy (gameObject, 3);
-	}
+    void Start()
+    {
+        Destroy(gameObject, 3);
+    }
 
-	void FixedUpdate ()
-	{
-		if (!paused)
-			GetComponent<Rigidbody2D> ().velocity = speed;
-	}
+    void FixedUpdate()
+    {
+        if (!_paused)
+            GetComponent<Rigidbody2D>().velocity = speed;
+    }
 }

@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelScript : MonoBehaviour {
+public class LevelScript : MonoBehaviour
+{
+    public Text levelText;
+    public int level = 99;
 
-	public Text levelText;
-	public int level = 99;
+    void Start()
+    {
+        level = 0;
 
-	void Start ()
-	{
-		level = 0;
+        SetLevelText();
+    }
 
-		SetLevelText ();
-	}
+    void SetLevelText()
+    {
+        levelText.text = "Level : " + level.ToString();
+    }
 
-	void SetLevelText ()
-	{
-		levelText.text = "Level : " + level.ToString ();
-	}
-
-	public void LevelAdd ()
-	{
-		level++;
-		SetLevelText ();
-	}
+    public void LevelAdd()
+    {
+        level++;
+        SetLevelText();
+    }
 }

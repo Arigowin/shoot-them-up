@@ -4,68 +4,75 @@ using UnityEngine;
 
 public class ScrollingScript : MonoBehaviour
 {
-	public Vector2 speed = new Vector2 (2, 2);
-	public Vector2 direction = new Vector2 (-1, 0);
-	public bool isLinkedToCamera = false;
-	public bool isLooping = false;
-	private List<Transform> backgroundPart;
-	protected bool paused = false;
+    public Vector2 speed = new Vector2(2, 2);
+    public Vector2 direction = new Vector2(-1, 0);
+    public bool isLinkedToCamera = false;
+    public bool isLooping = false;
+    private List<Transform> _backgroundPart;
+    protected bool _paused = false;
 
-	void OnPauseGame ()
-	{
-		paused = true;
-	}
+    void OnPauseGame()
+    {
+        _paused = true;
+    }
 
-	void OnResumeGame ()
-	{
-		paused = false;
-	}
+    void OnResumeGame()
+    {
+        _paused = false;
+    }
 
-	void Start ()
-	{
-		if (isLooping) {
-			backgroundPart = new List<Transform> ();
+    void Start()
+    {
+        if (isLooping)
+        {
+            _backgroundPart = new List<Transform>();
 
-			for (int i = 0; i < transform.childCount; i++) {
-				Transform child = transform.GetChild (i);
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                Transform child = transform.GetChild(i);
 
-				if (child.GetComponent<Renderer> () != null)
-					backgroundPart.Add (child);
-			}
+                if (child.GetComponent<Renderer>() != null)
+                    _backgroundPart.Add(child);
+            }
 
-			backgroundPart = backgroundPart.OrderBy (t => t.position.y).ToList ();
-		}
-	}
+            _backgroundPart = _backgroundPart.OrderBy(t => t.position.y).ToList();
+        }
+    }
 
-	void Update ()
-	{
-		if (!paused) {
-			Vector3 movement = new Vector3 (speed.x * direction.x, speed.y * direction.y, 0);
+    void Update()
+    {
+        if (!_paused)
+        {
+            Vector3 movement = new Vector3(speed.x * direction.x, speed.y * direction.y, 0);
 
-			movement *= Time.deltaTime;
-			transform.Translate (movement);
+            movement *= Time.deltaTime;
+            transform.Translate(movement);
 
-			if (isLinkedToCamera)
-				Camera.main.transform.Translate (movement);
+            if (isLinkedToCamera)
+                Camera.main.transform.Translate(movement);
 
-			if (isLooping) {
-				Transform firstChild = backgroundPart.FirstOrDefault ();
+            if (isLooping)
+            {
+                Transform firstChild = _backgroundPart.FirstOrDefault();
 
-				if (firstChild != null) {
-					if (firstChild.position.y < Camera.main.transform.position.y) {
-						if (firstChild.GetComponent<Renderer> ().IsVisibleFrom (Camera.main) == false) {
-							Transform lastChild = backgroundPart.LastOrDefault ();
-							Vector3 lastPosition = lastChild.transform.position;
-							Vector3 lastSize = (lastChild.GetComponent<Renderer> ().bounds.max - lastChild.GetComponent<Renderer> ().bounds.min);
+                if (firstChild != null)
+                {
+                    if (firstChild.position.y < Camera.main.transform.position.y)
+                    {
+                        if (firstChild.GetComponent<Renderer>().IsVisibleFrom(Camera.main) == false)
+                        {
+                            Transform lastChild = _backgroundPart.LastOrDefault();
+                            Vector3 lastPosition = lastChild.transform.position;
+                            Vector3 lastSize = (lastChild.GetComponent<Renderer>().bounds.max - lastChild.GetComponent<Renderer>().bounds.min);
 
-							firstChild.position = new Vector3 (firstChild.position.x, lastPosition.y + lastSize.y, firstChild.position.z);
+                            firstChild.position = new Vector3(firstChild.position.x, lastPosition.y + lastSize.y, firstChild.position.z);
 
-							backgroundPart.Remove (firstChild);
-							backgroundPart.Add (firstChild);
-						}
-					}
-				}
-			}
-		}
-	}
+                            _backgroundPart.Remove(firstChild);
+                            _backgroundPart.Add(firstChild);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
