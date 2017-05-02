@@ -11,14 +11,19 @@ public class ScrollingScript : MonoBehaviour
     private List<Transform> _backgroundPart;
     protected bool _paused = false;
 
-    void OnPauseGame()
+    void OnEnable()
     {
-        _paused = true;
+        PauseScript.OnPauseGame += OnPauseGame;
     }
 
-    void OnResumeGame()
+    void OnDisable()
     {
-        _paused = false;
+        PauseScript.OnPauseGame -= OnPauseGame;
+    }
+
+    void OnPauseGame(bool pause)
+    {
+        _paused = pause;
     }
 
     void Start()

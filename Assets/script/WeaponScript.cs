@@ -17,14 +17,19 @@ public class WeaponScript : MonoBehaviour
         }
     }
 
-    void OnPauseGame()
+    void OnEnable()
     {
-        _paused = true;
+        PauseScript.OnPauseGame += OnPauseGame;
     }
 
-    void OnResumeGame()
+    void OnDisable()
     {
-        _paused = false;
+        PauseScript.OnPauseGame -= OnPauseGame;
+    }
+
+    void OnPauseGame(bool pause)
+    {
+        _paused = pause;
     }
 
     void Start()

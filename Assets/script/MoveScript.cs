@@ -7,14 +7,19 @@ public class MoveScript : MonoBehaviour
     private Vector2 _movement;
     protected bool _paused = false;
 
-    void OnPauseGame()
+    void OnEnable()
     {
-        _paused = true;
+        PauseScript.OnPauseGame += OnPauseGame;
     }
 
-    void OnResumeGame()
+    void OnDisable()
     {
-        _paused = false;
+        PauseScript.OnPauseGame -= OnPauseGame;
+    }
+
+    void OnPauseGame(bool pause)
+    {
+        _paused = pause;
     }
 
     void Update()

@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class PauseScript : MonoBehaviour
 {
+    public delegate void PauseEvent(bool pause);
+
+    public static event PauseEvent OnPauseGame;
+
     private bool _gameOver = false;
     private bool _pause = false;
     private float _timescale = 1;
@@ -36,9 +40,8 @@ public class PauseScript : MonoBehaviour
         {
             _timescale = Time.timeScale;
             Time.timeScale = 0;
-            Object[] objects = FindObjectsOfType(typeof(GameObject));
-            foreach (GameObject go in objects)
-                go.SendMessage("OnPauseGame", SendMessageOptions.DontRequireReceiver);
+            if (OnPauseGame != null)
+                OnPauseGame(true);
             _pause = true;
         }
     }
@@ -46,9 +49,9 @@ public class PauseScript : MonoBehaviour
     void Resume()
     {
         Time.timeScale = _timescale;
-        Object[] objects = FindObjectsOfType(typeof(GameObject));
-        foreach (GameObject go in objects)
-            go.SendMessage("OnResumeGame", SendMessageOptions.DontRequireReceiver);
+
+        if (OnPauseGame != null)
+            OnPauseGame(false);
         _pause = false;
         _gameOver = false;
     }
