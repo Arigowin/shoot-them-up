@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    public delegate void PlayerEvent();
+
+    public static event PlayerEvent OnPlayerDeath;
+
     public Vector2 speed = new Vector2(10, 10);
     private Vector2 _default_speed;
     private Vector2 _movement;
@@ -131,9 +135,7 @@ public class PlayerScript : MonoBehaviour
 
     void OnDestroy()
     {
-        //EventManager.TriggerEvent("GameOver");
-        Object[] objects = FindObjectsOfType(typeof(GameObject));
-        foreach (GameObject go in objects)
-            go.SendMessage("GameOver", SendMessageOptions.DontRequireReceiver);
+        if (OnPlayerDeath != null)
+            OnPlayerDeath();
     }
 }

@@ -9,6 +9,16 @@ public class PauseScript : MonoBehaviour
     private bool _pause = false;
     private float _timescale = 1;
 
+    void OnEnable()
+    {
+        PlayerScript.OnPlayerDeath += GameOver;
+    }
+
+    void OnDisable()
+    {
+        PlayerScript.OnPlayerDeath -= GameOver;
+    }
+
     void Update()
     {
         if (_gameOver || (_pause == false && Input.GetKey(KeyCode.Escape)))
