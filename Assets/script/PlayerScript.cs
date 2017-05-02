@@ -20,34 +20,6 @@ public class PlayerScript : MonoBehaviour
         _paused = false;
     }
 
-    void OnEnable()
-    {
-        EventManager.StartListening("Left_down", Left);
-        EventManager.StartListening("Left_up", Reset);
-        EventManager.StartListening("Right_down", Right);
-        EventManager.StartListening("Right_up", Reset);
-        EventManager.StartListening("Up_down", Up);
-        EventManager.StartListening("Up_up", Reset);
-        EventManager.StartListening("Down_down", Down);
-        EventManager.StartListening("Down_up", Reset);
-        EventManager.StartListening("Shift_down", Shift);
-        EventManager.StartListening("Shift_up", ShiftUp);
-    }
-
-    void OnDisable()
-    {
-        EventManager.StopListening("Left_down", Left);
-        EventManager.StopListening("Left_up", Reset);
-        EventManager.StopListening("Right_down", Right);
-        EventManager.StopListening("Right_up", Reset);
-        EventManager.StopListening("Up_down", Up);
-        EventManager.StopListening("Up_up", Reset);
-        EventManager.StopListening("Down_down", Down);
-        EventManager.StopListening("Down_up", Reset);
-        EventManager.StopListening("Shift_down", Shift);
-        EventManager.StopListening("Shift_up", ShiftUp);
-    }
-
     void Start()
     {
         _default_speed = speed;
@@ -61,6 +33,29 @@ public class PlayerScript : MonoBehaviour
     {
         if (!_paused)
         {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                Left();
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                Right();
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                Up();
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+                Down();
+
+            // key Up
+            if (!(Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)))
+            {
+                if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
+                    Reset();
+            }
+
+            // Special Key
+            if (Input.GetKeyDown(KeyCode.LeftShift))
+                Shift();
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+                ShiftUp();
+            
+
             var dist = (transform.position - Camera.main.transform.position).z;
             var leftBorder = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, dist)).x;
             var rightBorder = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, dist)).x;
@@ -136,6 +131,9 @@ public class PlayerScript : MonoBehaviour
 
     void OnDestroy()
     {
-        EventManager.TriggerEvent("GameOver");
+        //EventManager.TriggerEvent("GameOver");
+        Object[] objects = FindObjectsOfType(typeof(GameObject));
+        foreach (GameObject go in objects)
+            go.SendMessage("GameOver", SendMessageOptions.DontRequireReceiver);
     }
 }

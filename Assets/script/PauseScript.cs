@@ -5,26 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class PauseScript : MonoBehaviour
 {
-    private bool _pause = false;
     private bool _gameOver = false;
+    private bool _pause = false;
     private float _timescale = 1;
 
-    void OnEnable()
+    void Update()
     {
-        EventManager.StartListening("Pause", Pause);
-        EventManager.StartListening("GameOver", GameOver);
-    }
-
-    void OnDisable()
-    {
-        EventManager.StopListening("Pause", Pause);
-        EventManager.StopListening("GameOver", GameOver);
+        if (_gameOver || (_pause == false && Input.GetKey(KeyCode.Escape)))
+            Pause();
     }
 
     void GameOver()
     {
         _gameOver = true;
-        Pause();
     }
 
     void Pause()
@@ -47,11 +40,12 @@ public class PauseScript : MonoBehaviour
         foreach (GameObject go in objects)
             go.SendMessage("OnResumeGame", SendMessageOptions.DontRequireReceiver);
         _pause = false;
+        _gameOver = false;
     }
 
     void OnGUI()
     {
-        if (_pause)
+        if (_pause || _gameOver)
         {
             const int buttonWidth = 120;
             const int buttonHeight = 60;
@@ -61,13 +55,11 @@ public class PauseScript : MonoBehaviour
             if (GUI.Button(new Rect(Screen.width / 2 - (buttonWidth / 2), (2 * Screen.height / 4) - (buttonHeight / 2), buttonWidth, buttonHeight), "Retry"))
             {
                 Resume();
-                Destroy(EventManager.Instance);
                 SceneManager.LoadScene("shoot_them_up", LoadSceneMode.Single);
             }
             if (GUI.Button(new Rect(Screen.width / 2 - (buttonWidth / 2), (3 * Screen.height / 4) - (buttonHeight / 2), buttonWidth, buttonHeight), "Back to menu"))
             {
                 Resume();
-                Destroy(EventManager.Instance);
                 SceneManager.LoadScene("shoot_them_up_menu", LoadSceneMode.Single);
             }
         }

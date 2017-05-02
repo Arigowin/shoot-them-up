@@ -27,18 +27,6 @@ public class WeaponScript : MonoBehaviour
         _paused = false;
     }
 
-    void OnEnable()
-    {
-        if (isEnemy == false)
-            EventManager.StartListening("Space", Attack);
-    }
-
-    void OnDisable()
-    {
-        if (isEnemy == false)
-            EventManager.StopListening("Space", Attack);
-    }
-
     void Start()
     {
         _shootCooldown = 0f;
@@ -48,6 +36,12 @@ public class WeaponScript : MonoBehaviour
     {
         if (!_paused)
         {
+            if (isEnemy == false)
+            {
+                if (Input.GetKey(KeyCode.Space))
+                    Attack();
+            }
+
             if (_shootCooldown > 0)
                 _shootCooldown -= Time.deltaTime;
         }
